@@ -129,7 +129,7 @@ pub fn message_decoder() -> decode.Decoder(Message) {
   use chat <- decode.field("chat", user.chat_decoder())
   use forward_origin <- decode.field(
     "forward_origin",
-    decode.optional(todo as "Decoder for MessageOrigin"),
+    decode.optional(message_origin_decoder()),
   )
   use is_topic_message <- decode.field(
     "is_topic_message",
@@ -145,15 +145,12 @@ pub fn message_decoder() -> decode.Decoder(Message) {
   )
   use external_reply <- decode.field(
     "external_reply",
-    decode.optional(todo as "Decoder for ExternalReplyInfo"),
+    decode.optional(external_reply_info_decoder()),
   )
-  use quote <- decode.field(
-    "quote",
-    decode.optional(todo as "Decoder for TextQuote"),
-  )
+  use quote <- decode.field("quote", decode.optional(text_quote_decoder()))
   use reply_to_story <- decode.field(
     "reply_to_story",
-    decode.optional(todo as "Decoder for Story"),
+    decode.optional(story_decoder()),
   )
   use via_bot <- decode.field("via_bot", decode.optional(user.user_decoder()))
   use edit_date <- decode.field("edit_date", decode.optional(decode.int))
@@ -180,57 +177,45 @@ pub fn message_decoder() -> decode.Decoder(Message) {
   use text <- decode.field("text", decode.optional(decode.string))
   use entities <- decode.field(
     "entities",
-    decode.list(todo as "Decoder for MessageEntity"),
+    decode.list(message_entity_decoder()),
   )
   use link_preview_options <- decode.field(
     "link_preview_options",
-    decode.optional(todo as "Decoder for LinkPreviewOptions"),
+    decode.optional(link_preview_options_decoder()),
   )
   use effect_id <- decode.field("effect_id", decode.optional(decode.string))
   use animation <- decode.field(
     "animation",
-    decode.optional(todo as "Decoder for Animation"),
+    decode.optional(file.animation_decoder()),
   )
-  use audio <- decode.field(
-    "audio",
-    decode.optional(todo as "Decoder for Audio"),
-  )
+  use audio <- decode.field("audio", decode.optional(file.audio_decoder()))
   use document <- decode.field(
     "document",
-    decode.optional(todo as "Decoder for Document"),
+    decode.optional(file.document_decoder()),
   )
   use paid_media <- decode.field(
     "paid_media",
-    decode.optional(todo as "Decoder for PaidMediaInfo"),
+    decode.optional(file.paid_media_info_decoder()),
   )
   use photo <- decode.field(
     "photo",
-    decode.optional(decode.list(todo as "Decoder for PhotoSize")),
+    decode.optional(decode.list(file.photo_size_decoder())),
   )
   use sticker <- decode.field(
     "sticker",
-    decode.optional(todo as "Decoder for Sticker"),
+    decode.optional(sticker.sticker_decoder()),
   )
-  use story <- decode.field(
-    "story",
-    decode.optional(todo as "Decoder for Story"),
-  )
-  use video <- decode.field(
-    "video",
-    decode.optional(todo as "Decoder for Video"),
-  )
+  use story <- decode.field("story", decode.optional(story_decoder()))
+  use video <- decode.field("video", decode.optional(file.video_decoder()))
   use video_note <- decode.field(
     "video_note",
-    decode.optional(todo as "Decoder for VideoNote"),
+    decode.optional(file.video_note_decoder()),
   )
-  use voice <- decode.field(
-    "voice",
-    decode.optional(todo as "Decoder for Voice"),
-  )
+  use voice <- decode.field("voice", decode.optional(file.voice_decoder()))
   use caption <- decode.field("caption", decode.optional(decode.string))
   use caption_entities <- decode.field(
     "caption_entities",
-    decode.optional(decode.list(todo as "Decoder for MessageEntity")),
+    decode.optional(decode.list(message_entity_decoder())),
   )
   use show_caption_above_media <- decode.field(
     "show_caption_above_media",
@@ -240,21 +225,12 @@ pub fn message_decoder() -> decode.Decoder(Message) {
     "has_media_spiler",
     decode.optional(decode.bool),
   )
-  use contact <- decode.field(
-    "contact",
-    decode.optional(todo as "Decoder for Contact"),
-  )
-  use dice <- decode.field("dice", decode.optional(todo as "Decoder for Dice"))
-  use game <- decode.field("game", decode.optional(todo as "Decoder for Game"))
-  use poll <- decode.field("poll", decode.optional(todo as "Decoder for Poll"))
-  use venue <- decode.field(
-    "venue",
-    decode.optional(todo as "Decoder for Venue"),
-  )
-  use location <- decode.field(
-    "location",
-    decode.optional(todo as "Decoder for Location"),
-  )
+  use contact <- decode.field("contact", decode.optional(contact_decoder()))
+  use dice <- decode.field("dice", decode.optional(dice_decoder()))
+  use game <- decode.field("game", decode.optional(game_decoder()))
+  use poll <- decode.field("poll", decode.optional(poll_decoder()))
+  use venue <- decode.field("venue", decode.optional(venue_decoder()))
+  use location <- decode.field("location", decode.optional(location_decoder()))
   use new_chat_members <- decode.field(
     "new_chat_members",
     decode.optional(decode.list(user.user_decoder())),
@@ -269,7 +245,7 @@ pub fn message_decoder() -> decode.Decoder(Message) {
   )
   use new_chat_photo <- decode.field(
     "new_chat_photo",
-    decode.optional(decode.list(todo as "Decoder for PhotoSize")),
+    decode.optional(decode.list(file.photo_size_decoder())),
   )
   use delete_chat_photo <- decode.field(
     "delete_chat_photo",
@@ -289,7 +265,7 @@ pub fn message_decoder() -> decode.Decoder(Message) {
   )
   use message_auto_delete_timer_changed <- decode.field(
     "message_auto_delete_timer_changed",
-    decode.optional(todo as "Decoder for MessageAutoDeleteTimerChanged"),
+    decode.optional(message_auto_delete_timer_changed_decoder()),
   )
   use migrate_to_chat_id <- decode.field(
     "migrate_to_chat_id",
@@ -301,35 +277,29 @@ pub fn message_decoder() -> decode.Decoder(Message) {
   )
   use pinned_message <- decode.field(
     "pinned_message",
-    decode.optional(todo as "Decoder for MaybeInaccessibleMessage"),
+    decode.optional(maybe_inaccessible_message_decoder()),
   )
-  use invoice <- decode.field(
-    "invoice",
-    decode.optional(todo as "Decoder for Invoice"),
-  )
+  use invoice <- decode.field("invoice", decode.optional(invoice_decoder()))
   use successful_payment <- decode.field(
     "successful_payment",
-    decode.optional(todo as "Decoder for SuccessfulPayment"),
+    decode.optional(successful_payment_decoder()),
   )
   use refunded_payment <- decode.field(
     "refunded_payment",
-    decode.optional(todo as "Decoder for RefundedPayment"),
+    decode.optional(refunded_payment_decoder()),
   )
   use users_shared <- decode.field(
     "users_shared",
-    decode.optional(todo as "Decoder for UsersShared"),
+    decode.optional(users_shared_decoder()),
   )
   use chat_shared <- decode.field(
     "chat_shared",
-    decode.optional(todo as "Decoder for ChatShared"),
+    decode.optional(chat_shared_decoder()),
   )
-  use gift <- decode.field(
-    "gift",
-    decode.optional(todo as "Decoder for GiftInfo"),
-  )
+  use gift <- decode.field("gift", decode.optional(gift_info_decoder()))
   use unique_gift <- decode.field(
     "unique_gift",
-    decode.optional(todo as "Decoder for UniqueGiftInfo"),
+    decode.optional(unique_gift_info_decoder()),
   )
   use connected_website <- decode.field(
     "connected_website",
@@ -337,91 +307,88 @@ pub fn message_decoder() -> decode.Decoder(Message) {
   )
   use write_access_allowed <- decode.field(
     "write_access_allowed",
-    decode.optional(todo as "Decoder for WriteAccessAllowed"),
+    decode.optional(write_access_allowed_decoder()),
   )
   use passport_data <- decode.field(
     "passport_data",
-    decode.optional(todo as "Decoder for PassportData"),
+    decode.optional(passport_data_decoder()),
   )
   use proximity_alert_triggered <- decode.field(
     "proximity_alert_triggered",
-    decode.optional(todo as "Decoder for ProximityAlertTriggered"),
+    decode.optional(proximity_alert_triggered_decoder()),
   )
   use boost_added <- decode.field(
     "boost_added",
-    decode.optional(todo as "Decoder for ChatBoostAdded"),
+    decode.optional(chat_boost_added_decoder()),
   )
   use chat_background_set <- decode.field(
     "chat_background_set",
-    decode.optional(todo as "Decoder for ChatBackground"),
+    decode.optional(chat_background_decoder()),
   )
   use forum_topic_created <- decode.field(
     "forum_topic_created",
-    decode.optional(todo as "Decoder for ForumTopicCreated"),
+    decode.optional(forum_topic_created_decoder()),
   )
   use forum_topic_edited <- decode.field(
     "forum_topic_edited",
-    decode.optional(todo as "Decoder for ForumTopicEdited"),
+    decode.optional(forum_topic_edited_decoder()),
   )
   use forum_topic_closed <- decode.field(
     "forum_topic_closed",
-    decode.optional(todo as "Decoder for ForumTopicClosed"),
+    decode.optional(forum_topic_closed_decoder()),
   )
   use forum_topic_reopened <- decode.field(
     "forum_topic_reopened",
-    decode.optional(todo as "Decoder for ForumTopicReopened"),
+    decode.optional(forum_topic_reopened_decoder()),
   )
   use general_forum_topic_hidden <- decode.field(
     "general_forum_topic_hidden",
-    decode.optional(todo as "Decoder for GeneralForumTopicHidden"),
+    decode.optional(general_forum_topic_hidden_decoder()),
   )
   use general_forum_topic_unhidden <- decode.field(
     "general_forum_topic_unhidden",
-    decode.optional(todo as "Decoder for GeneralForumTopicUnhidden"),
+    decode.optional(general_forum_topic_unhidden_decoder()),
   )
   use giveaway_created <- decode.field(
     "giveaway_created",
-    decode.optional(todo as "Decoder for GiveawayCreated"),
+    decode.optional(giveaway_created_decoder()),
   )
-  use giveaway <- decode.field(
-    "giveaway",
-    decode.optional(todo as "Decoder for Giveaway"),
-  )
+  use giveaway <- decode.field("giveaway", decode.optional(giveaway_decoder()))
   use giveaway_winners <- decode.field(
     "giveaway_winners",
-    decode.optional(todo as "Decoder for GiveawayWinners"),
+    decode.optional(giveaway_winners_decoder()),
   )
   use giveaway_completed <- decode.field(
     "giveaway_completed",
-    decode.optional(todo as "Decoder for GiveawayCompleted"),
+    decode.optional(giveaway_completed_decoder()),
   )
   use paid_message_price_changed <- decode.field(
     "paid_message_price_changed",
-    decode.optional(todo as "Decoder for PaidMessagePriceChanged"),
+    decode.optional(paid_message_price_changed_decoder()),
   )
   use video_chat_scheduled <- decode.field(
     "video_chat_scheduled",
-    decode.optional(todo as "Decoder for VideoChatScheduled"),
+    decode.optional(video_chat_scheduled_decoder()),
   )
   use video_chat_started <- decode.field(
     "video_chat_started",
-    decode.optional(todo as "Decoder for VideoChatStarted"),
+    decode.optional(video_chat_started_decoder()),
   )
   use video_chat_ended <- decode.field(
     "video_chat_ended",
-    decode.optional(todo as "Decoder for VideoChatEnded"),
+    decode.optional(video_chat_ended_decoder()),
   )
   use video_chat_participants_invited <- decode.field(
     "video_chat_participants_invited",
-    decode.optional(todo as "Decoder for VideoChatParticipantsInvited"),
+    decode.optional(video_chat_participants_invited_decoder()),
   )
   use web_app_data <- decode.field(
     "web_app_data",
-    decode.optional(todo as "Decoder for inline_keyboard.WebAppData"),
+    decode.optional(inline_keyboard.web_app_data_decoder()),
   )
   use reply_markup <- decode.field(
     "reply_markup",
-    decode.optional(todo as "Decoder for inline_keyboard.InlineKeyboardMarkup"),
+    decode.optional(inline_keyboard.inline_keyboard_markup_decoder()),
   )
   decode.success(Message(
     message_id:,
@@ -548,10 +515,7 @@ pub type ReactionCount {
 }
 
 pub fn reaction_count_decoder() -> decode.Decoder(ReactionCount) {
-  use reaction_type <- decode.field(
-    "reaction_type",
-    todo as "Decoder for ReactionType",
-  )
+  use reaction_type <- decode.field("reaction_type", reaction_type_decoder())
   use total_count <- decode.field("total_count", decode.int)
   decode.success(ReactionCount(reaction_type:, total_count:))
 }
@@ -581,11 +545,11 @@ pub fn message_reaction_updated_decoder() -> decode.Decoder(
   use date <- decode.field("date", decode.int)
   use old_reactions <- decode.field(
     "old_reactions",
-    decode.list(todo as "Decoder for ReactionType"),
+    decode.list(reaction_type_decoder()),
   )
   use new_reactions <- decode.field(
     "new_reactions",
-    decode.list(todo as "Decoder for ReactionType"),
+    decode.list(reaction_type_decoder()),
   )
   decode.success(MessageReactionUpdated(
     chat:,
@@ -656,84 +620,57 @@ pub type ExternalReplyInfo {
 }
 
 pub fn external_reply_info_decoder() -> decode.Decoder(ExternalReplyInfo) {
-  use origin <- decode.field("origin", todo as "Decoder for MessageOrigin")
-  use chat <- decode.field("chat", decode.optional(todo as "Decoder for Chat"))
+  use origin <- decode.field("origin", message_origin_decoder())
+  use chat <- decode.field("chat", decode.optional(user.chat_decoder()))
   use message_id <- decode.field("message_id", decode.optional(decode.int))
   use link_preview_options <- decode.field(
     "link_preview_options",
-    decode.optional(todo as "Decoder for LinkPreviewOptions"),
+    decode.optional(link_preview_options_decoder()),
   )
   use animation <- decode.field(
     "animation",
-    decode.optional(todo as "Decoder for Animation"),
+    decode.optional(file.animation_decoder()),
   )
-  use audio <- decode.field(
-    "audio",
-    decode.optional(todo as "Decoder for Audio"),
-  )
+  use audio <- decode.field("audio", decode.optional(file.audio_decoder()))
   use document <- decode.field(
     "document",
-    decode.optional(todo as "Decoder for Document"),
+    decode.optional(file.document_decoder()),
   )
   use paid_media <- decode.field(
     "paid_media",
-    decode.optional(todo as "Decoder for PaidMediaInfo"),
+    decode.optional(file.paid_media_info_decoder()),
   )
   use photo <- decode.field(
     "photo",
-    decode.optional(decode.list(todo as "Decoder for PhotoSize")),
+    decode.optional(decode.list(file.photo_size_decoder())),
   )
   use sticker <- decode.field(
     "sticker",
-    decode.optional(todo as "Decoder for Sticker"),
+    decode.optional(sticker.sticker_decoder()),
   )
-  use story <- decode.field(
-    "story",
-    decode.optional(todo as "Decoder for Story"),
-  )
-  use video <- decode.field(
-    "video",
-    decode.optional(todo as "Decoder for Video"),
-  )
+  use story <- decode.field("story", decode.optional(story_decoder()))
+  use video <- decode.field("video", decode.optional(file.video_decoder()))
   use video_note <- decode.field(
     "video_note",
-    decode.optional(todo as "Decoder for VideoNote"),
+    decode.optional(file.video_note_decoder()),
   )
-  use voice <- decode.field(
-    "voice",
-    decode.optional(todo as "Decoder for Voice"),
-  )
+  use voice <- decode.field("voice", decode.optional(file.voice_decoder()))
   use has_media_spoiler <- decode.field(
     "has_media_spoiler",
     decode.optional(decode.bool),
   )
-  use contact <- decode.field(
-    "contact",
-    decode.optional(todo as "Decoder for Contact"),
-  )
-  use dice <- decode.field("dice", decode.optional(todo as "Decoder for Dice"))
-  use game <- decode.field("game", decode.optional(todo as "Decoder for Game"))
-  use giveaway <- decode.field(
-    "giveaway",
-    decode.optional(todo as "Decoder for Giveaway"),
-  )
+  use contact <- decode.field("contact", decode.optional(contact_decoder()))
+  use dice <- decode.field("dice", decode.optional(dice_decoder()))
+  use game <- decode.field("game", decode.optional(game_decoder()))
+  use giveaway <- decode.field("giveaway", decode.optional(giveaway_decoder()))
   use giveaway_winners <- decode.field(
     "giveaway_winners",
-    decode.optional(todo as "Decoder for GiveawayWinners"),
+    decode.optional(giveaway_winners_decoder()),
   )
-  use invoice <- decode.field(
-    "invoice",
-    decode.optional(todo as "Decoder for Invoice"),
-  )
-  use location <- decode.field(
-    "location",
-    decode.optional(todo as "Decoder for Location"),
-  )
-  use poll <- decode.field("poll", decode.optional(todo as "Decoder for Poll"))
-  use venue <- decode.field(
-    "venue",
-    decode.optional(todo as "Decoder for Venue"),
-  )
+  use invoice <- decode.field("invoice", decode.optional(invoice_decoder()))
+  use location <- decode.field("location", decode.optional(location_decoder()))
+  use poll <- decode.field("poll", decode.optional(poll_decoder()))
+  use venue <- decode.field("venue", decode.optional(venue_decoder()))
   decode.success(ExternalReplyInfo(
     origin:,
     chat:,
@@ -786,6 +723,13 @@ pub type VideoChatStarted {
   VideoChatStarted
 }
 
+pub fn video_chat_started_decoder() -> decode.Decoder(VideoChatStarted) {
+  use variant <- decode.then(decode.string)
+  case variant {
+    _ -> decode.success(VideoChatStarted)
+  }
+}
+
 pub type VideoChatScheduled {
   VideoChatScheduled(start_date: Int)
 }
@@ -813,16 +757,48 @@ pub type GeneralForumTopicUnhidden {
   GeneralForumTopicUnhidden
 }
 
+pub fn general_forum_topic_unhidden_decoder() -> decode.Decoder(
+  GeneralForumTopicUnhidden,
+) {
+  use variant <- decode.then(decode.string)
+  case variant {
+    _ -> decode.success(GeneralForumTopicUnhidden)
+  }
+}
+
 pub type GeneralForumTopicHidden {
   GeneralForumTopicHidden
+}
+
+pub fn general_forum_topic_hidden_decoder() -> decode.Decoder(
+  GeneralForumTopicHidden,
+) {
+  use variant <- decode.then(decode.string)
+  case variant {
+    _ -> decode.success(GeneralForumTopicHidden)
+  }
 }
 
 pub type ForumTopicReopened {
   ForumTopicReopened
 }
 
+pub fn forum_topic_reopened_decoder() -> decode.Decoder(ForumTopicReopened) {
+  use variant <- decode.then(decode.string)
+  case variant {
+    _ -> decode.success(ForumTopicReopened)
+  }
+}
+
 pub type ForumTopicClosed {
   ForumTopicClosed
+}
+
+pub fn forum_topic_closed_decoder() -> decode.Decoder(ForumTopicClosed) {
+  use variant <- decode.then(decode.string)
+  case variant {
+    _ -> decode.success(ForumTopicClosed)
+  }
 }
 
 pub type ForumTopicEdited {
@@ -859,7 +835,7 @@ pub type ChatBackground {
 pub fn chat_background_decoder() -> decode.Decoder(ChatBackground) {
   use chat_background_type <- decode.field(
     "chat_background_type",
-    todo as "Decoder for BackgroundType",
+    background_type_decoder(),
   )
   decode.success(ChatBackground(chat_background_type:))
 }
@@ -894,7 +870,7 @@ pub fn background_type_decoder() -> decode.Decoder(BackgroundType) {
   case variant {
     "background_type_fill" -> {
       use background_type <- decode.field("background_type", decode.string)
-      use fill <- decode.field("fill", todo as "Decoder for BackgroundFill")
+      use fill <- decode.field("fill", background_fill_decoder())
       use dark_theme_dimming <- decode.field("dark_theme_dimming", decode.int)
       decode.success(BackgroundTypeFill(
         background_type:,
@@ -904,7 +880,7 @@ pub fn background_type_decoder() -> decode.Decoder(BackgroundType) {
     }
     "background_type_wallpaper" -> {
       use background_type <- decode.field("background_type", decode.string)
-      use document <- decode.field("document", todo as "Decoder for Document")
+      use document <- decode.field("document", file.document_decoder())
       use dark_theme_dimming <- decode.field("dark_theme_dimming", decode.int)
       use is_blured <- decode.field("is_blured", decode.optional(decode.bool))
       use is_moving <- decode.field("is_moving", decode.optional(decode.bool))
@@ -918,8 +894,8 @@ pub fn background_type_decoder() -> decode.Decoder(BackgroundType) {
     }
     "background_type_pattern" -> {
       use background_type <- decode.field("background_type", decode.string)
-      use document <- decode.field("document", todo as "Decoder for Document")
-      use fill <- decode.field("fill", todo as "Decoder for BackgroundFill")
+      use document <- decode.field("document", file.document_decoder())
+      use fill <- decode.field("fill", background_fill_decoder())
       use intensity <- decode.field("intensity", decode.int)
       use is_inverted <- decode.field(
         "is_inverted",
@@ -1032,11 +1008,11 @@ pub type PassportData {
 pub fn passport_data_decoder() -> decode.Decoder(PassportData) {
   use data <- decode.field(
     "data",
-    decode.list(todo as "Decoder for EncryptedPassportElement"),
+    decode.list(encrypted_passport_element_decoder()),
   )
   use credentials <- decode.field(
     "credentials",
-    todo as "Decoder for EncryptedCredentials",
+    encrypted_credentials_decoder(),
   )
   decode.success(PassportData(data:, credentials:))
 }
@@ -1082,23 +1058,20 @@ pub fn encrypted_passport_element_decoder() -> decode.Decoder(
   use email <- decode.field("email", decode.optional(decode.string))
   use files <- decode.field(
     "files",
-    decode.optional(decode.list(todo as "Decoder for PassportFile")),
+    decode.optional(decode.list(passport_file_decoder())),
   )
   use front_side <- decode.field(
     "front_side",
-    decode.optional(todo as "Decoder for PassportFile"),
+    decode.optional(passport_file_decoder()),
   )
   use reverse_side <- decode.field(
     "reverse_side",
-    decode.optional(todo as "Decoder for PassportFile"),
+    decode.optional(passport_file_decoder()),
   )
-  use selfie <- decode.field(
-    "selfie",
-    decode.optional(todo as "Decoder for PassportFile"),
-  )
+  use selfie <- decode.field("selfie", decode.optional(passport_file_decoder()))
   use translation <- decode.field(
     "translation",
-    decode.optional(decode.list(todo as "Decoder for PassportFile")),
+    decode.optional(decode.list(passport_file_decoder())),
   )
   use hash <- decode.field("hash", decode.string)
   decode.success(EncryptedPassportElement(
@@ -1140,6 +1113,23 @@ pub type WriteAccessAllowed {
   )
 }
 
+pub fn write_access_allowed_decoder() -> decode.Decoder(WriteAccessAllowed) {
+  use from_request <- decode.field("from_request", decode.optional(decode.bool))
+  use web_app_name <- decode.field(
+    "web_app_name",
+    decode.optional(decode.string),
+  )
+  use from_attachment_menu <- decode.field(
+    "from_attachment_menu",
+    decode.optional(decode.bool),
+  )
+  decode.success(WriteAccessAllowed(
+    from_request:,
+    web_app_name:,
+    from_attachment_menu:,
+  ))
+}
+
 pub type ChatShared {
   ChatShared(
     request_id: Int,
@@ -1150,8 +1140,26 @@ pub type ChatShared {
   )
 }
 
+pub fn chat_shared_decoder() -> decode.Decoder(ChatShared) {
+  use request_id <- decode.field("request_id", decode.int)
+  use chat_id <- decode.field("chat_id", decode.int)
+  use title <- decode.field("title", decode.optional(decode.string))
+  use username <- decode.field("username", decode.optional(decode.string))
+  use photo <- decode.field(
+    "photo",
+    decode.optional(decode.list(file.photo_size_decoder())),
+  )
+  decode.success(ChatShared(request_id:, chat_id:, title:, username:, photo:))
+}
+
 pub type UsersShared {
   UsersShared(request_id: Int, users: List(SharedUser))
+}
+
+pub fn users_shared_decoder() -> decode.Decoder(UsersShared) {
+  use request_id <- decode.field("request_id", decode.int)
+  use users <- decode.field("users", decode.list(shared_user_decoder()))
+  decode.success(UsersShared(request_id:, users:))
 }
 
 pub type SharedUser {
@@ -1164,6 +1172,24 @@ pub type SharedUser {
   )
 }
 
+pub fn shared_user_decoder() -> decode.Decoder(SharedUser) {
+  use user_id <- decode.field("user_id", decode.int)
+  use first_name <- decode.field("first_name", decode.optional(decode.string))
+  use last_name <- decode.field("last_name", decode.optional(decode.string))
+  use username <- decode.field("username", decode.optional(decode.string))
+  use photo <- decode.field(
+    "photo",
+    decode.optional(decode.list(file.photo_size_decoder())),
+  )
+  decode.success(SharedUser(
+    user_id:,
+    first_name:,
+    last_name:,
+    username:,
+    photo:,
+  ))
+}
+
 pub type RefundedPayment {
   RefundedPayment(
     currency: String,
@@ -1172,6 +1198,27 @@ pub type RefundedPayment {
     telegram_payment_charge_id: String,
     provider_payment_charge_id: Option(String),
   )
+}
+
+pub fn refunded_payment_decoder() -> decode.Decoder(RefundedPayment) {
+  use currency <- decode.field("currency", decode.string)
+  use total_amount <- decode.field("total_amount", decode.int)
+  use invoice_payload <- decode.field("invoice_payload", decode.string)
+  use telegram_payment_charge_id <- decode.field(
+    "telegram_payment_charge_id",
+    decode.string,
+  )
+  use provider_payment_charge_id <- decode.field(
+    "provider_payment_charge_id",
+    decode.optional(decode.string),
+  )
+  decode.success(RefundedPayment(
+    currency:,
+    total_amount:,
+    invoice_payload:,
+    telegram_payment_charge_id:,
+    provider_payment_charge_id:,
+  ))
 }
 
 pub type SuccessfulPayment {
@@ -1189,6 +1236,49 @@ pub type SuccessfulPayment {
   )
 }
 
+pub fn successful_payment_decoder() -> decode.Decoder(SuccessfulPayment) {
+  use currency <- decode.field("currency", decode.string)
+  use total_amount <- decode.field("total_amount", decode.int)
+  use invoice_payload <- decode.field("invoice_payload", decode.string)
+  use subscription_expiration_date <- decode.field(
+    "subscription_expiration_date",
+    decode.optional(decode.int),
+  )
+  use is_recurring <- decode.field("is_recurring", decode.optional(decode.bool))
+  use is_first_recurring <- decode.field(
+    "is_first_recurring",
+    decode.optional(decode.bool),
+  )
+  use shipping_option_id <- decode.field(
+    "shipping_option_id",
+    decode.optional(decode.string),
+  )
+  use order_info <- decode.field(
+    "order_info",
+    decode.optional(order_info_decoder()),
+  )
+  use telegram_payment_charge_id <- decode.field(
+    "telegram_payment_charge_id",
+    decode.string,
+  )
+  use provider_payment_charge_id <- decode.field(
+    "provider_payment_charge_id",
+    decode.string,
+  )
+  decode.success(SuccessfulPayment(
+    currency:,
+    total_amount:,
+    invoice_payload:,
+    subscription_expiration_date:,
+    is_recurring:,
+    is_first_recurring:,
+    shipping_option_id:,
+    order_info:,
+    telegram_payment_charge_id:,
+    provider_payment_charge_id:,
+  ))
+}
+
 pub type OrderInfo {
   OrderInfo(
     name: Option(String),
@@ -1196,6 +1286,20 @@ pub type OrderInfo {
     email: Option(String),
     shipping_address: Option(ShippingAddress),
   )
+}
+
+pub fn order_info_decoder() -> decode.Decoder(OrderInfo) {
+  use name <- decode.field("name", decode.optional(decode.string))
+  use phone_number <- decode.field(
+    "phone_number",
+    decode.optional(decode.string),
+  )
+  use email <- decode.field("email", decode.optional(decode.string))
+  use shipping_address <- decode.field(
+    "shipping_address",
+    decode.optional(shipping_address_decoder()),
+  )
+  decode.success(OrderInfo(name:, phone_number:, email:, shipping_address:))
 }
 
 pub type ShippingAddress {
@@ -1209,6 +1313,23 @@ pub type ShippingAddress {
   )
 }
 
+pub fn shipping_address_decoder() -> decode.Decoder(ShippingAddress) {
+  use country_code <- decode.field("country_code", decode.string)
+  use state <- decode.field("state", decode.string)
+  use city <- decode.field("city", decode.string)
+  use street_line1 <- decode.field("street_line1", decode.string)
+  use street_line2 <- decode.field("street_line2", decode.string)
+  use post_code <- decode.field("post_code", decode.string)
+  decode.success(ShippingAddress(
+    country_code:,
+    state:,
+    city:,
+    street_line1:,
+    street_line2:,
+    post_code:,
+  ))
+}
+
 pub type Invoice {
   Invoice(
     title: String,
@@ -1217,6 +1338,21 @@ pub type Invoice {
     currency: String,
     total_amount: Int,
   )
+}
+
+pub fn invoice_decoder() -> decode.Decoder(Invoice) {
+  use title <- decode.field("title", decode.string)
+  use description <- decode.field("description", decode.string)
+  use start_parameter <- decode.field("start_parameter", decode.string)
+  use currency <- decode.field("currency", decode.string)
+  use total_amount <- decode.field("total_amount", decode.int)
+  decode.success(Invoice(
+    title:,
+    description:,
+    start_parameter:,
+    currency:,
+    total_amount:,
+  ))
 }
 
 pub type MaybeInaccessibleMessage {
@@ -1231,8 +1367,45 @@ pub type MaybeInaccessibleMessage {
   )
 }
 
+pub fn maybe_inaccessible_message_decoder() -> decode.Decoder(
+  MaybeInaccessibleMessage,
+) {
+  use maybe_inaccesseble_message_type <- decode.field(
+    "maybe_inaccesseble_message_type",
+    decode.string,
+  )
+  use offset <- decode.field("offset", decode.int)
+  use length <- decode.field("length", decode.int)
+  use url <- decode.field("url", decode.optional(decode.string))
+  use user <- decode.field("user", decode.optional(user.user_decoder()))
+  use language <- decode.field("language", decode.optional(decode.string))
+  use custom_emoji_id <- decode.field(
+    "custom_emoji_id",
+    decode.optional(decode.string),
+  )
+  decode.success(MaybeInaccessibleMessage(
+    maybe_inaccesseble_message_type:,
+    offset:,
+    length:,
+    url:,
+    user:,
+    language:,
+    custom_emoji_id:,
+  ))
+}
+
 pub type MessageAutoDeleteTimerChanged {
   MessageAutoDeleteTimerChanged(message_auto_delete_time: Int)
+}
+
+pub fn message_auto_delete_timer_changed_decoder() -> decode.Decoder(
+  MessageAutoDeleteTimerChanged,
+) {
+  use message_auto_delete_time <- decode.field(
+    "message_auto_delete_time",
+    decode.int,
+  )
+  decode.success(MessageAutoDeleteTimerChanged(message_auto_delete_time:))
 }
 
 pub type Venue {
@@ -1247,6 +1420,37 @@ pub type Venue {
   )
 }
 
+pub fn venue_decoder() -> decode.Decoder(Venue) {
+  use location <- decode.field("location", location_decoder())
+  use title <- decode.field("title", decode.string)
+  use address <- decode.field("address", decode.string)
+  use foursquare_id <- decode.field(
+    "foursquare_id",
+    decode.optional(decode.string),
+  )
+  use foursquare_type <- decode.field(
+    "foursquare_type",
+    decode.optional(decode.string),
+  )
+  use google_place_id <- decode.field(
+    "google_place_id",
+    decode.optional(decode.string),
+  )
+  use google_place_type <- decode.field(
+    "google_place_type",
+    decode.optional(decode.string),
+  )
+  decode.success(Venue(
+    location:,
+    title:,
+    address:,
+    foursquare_id:,
+    foursquare_type:,
+    google_place_id:,
+    google_place_type:,
+  ))
+}
+
 pub type Location {
   Location(
     latitude: Float,
@@ -1256,6 +1460,29 @@ pub type Location {
     heading: Option(Int),
     proximity_alert_radius: Option(Int),
   )
+}
+
+pub fn location_decoder() -> decode.Decoder(Location) {
+  use latitude <- decode.field("latitude", decode.float)
+  use longitude <- decode.field("longitude", decode.float)
+  use horizontal_accuracy <- decode.field(
+    "horizontal_accuracy",
+    decode.optional(decode.float),
+  )
+  use live_period <- decode.field("live_period", decode.optional(decode.int))
+  use heading <- decode.field("heading", decode.optional(decode.int))
+  use proximity_alert_radius <- decode.field(
+    "proximity_alert_radius",
+    decode.optional(decode.int),
+  )
+  decode.success(Location(
+    latitude:,
+    longitude:,
+    horizontal_accuracy:,
+    live_period:,
+    heading:,
+    proximity_alert_radius:,
+  ))
 }
 
 pub type Poll {
@@ -1277,12 +1504,67 @@ pub type Poll {
   )
 }
 
+pub fn poll_decoder() -> decode.Decoder(Poll) {
+  use id <- decode.field("id", decode.string)
+  use question <- decode.field("question", decode.string)
+  use question_entities <- decode.field(
+    "question_entities",
+    decode.optional(decode.list(message_entity_decoder())),
+  )
+  use options <- decode.field("options", decode.list(poll_option_decoder()))
+  use total_voter_count <- decode.field("total_voter_count", decode.int)
+  use is_closed <- decode.field("is_closed", decode.bool)
+  use is_anonymous <- decode.field("is_anonymous", decode.bool)
+  use poll_type <- decode.field("poll_type", decode.string)
+  use allows_multiple_answers <- decode.field(
+    "allows_multiple_answers",
+    decode.bool,
+  )
+  use correct_option_id <- decode.field(
+    "correct_option_id",
+    decode.optional(decode.int),
+  )
+  use explanation <- decode.field("explanation", decode.optional(decode.string))
+  use explanation_entities <- decode.field(
+    "explanation_entities",
+    decode.optional(decode.list(message_entity_decoder())),
+  )
+  use open_period <- decode.field("open_period", decode.optional(decode.int))
+  use close_date <- decode.field("close_date", decode.optional(decode.int))
+  decode.success(Poll(
+    id:,
+    question:,
+    question_entities:,
+    options:,
+    total_voter_count:,
+    is_closed:,
+    is_anonymous:,
+    poll_type:,
+    allows_multiple_answers:,
+    correct_option_id:,
+    explanation:,
+    explanation_entities:,
+    open_period:,
+    close_date:,
+  ))
+}
+
 pub type PollOption {
   PollOption(
     text: String,
     text_entities: Option(List(MessageEntity)),
     voter_count: Int,
   )
+}
+
+pub fn poll_option_decoder() -> decode.Decoder(PollOption) {
+  use text <- decode.field("text", decode.string)
+  use text_entities <- decode.field(
+    "text_entities",
+    decode.optional(decode.list(message_entity_decoder())),
+  )
+  use voter_count <- decode.field("voter_count", decode.int)
+  decode.success(PollOption(text:, text_entities:, voter_count:))
 }
 
 pub type PollAnswer {
@@ -1292,6 +1574,17 @@ pub type PollAnswer {
     user: Option(User),
     option_ids: List(Int),
   )
+}
+
+pub fn poll_answer_decoder() -> decode.Decoder(PollAnswer) {
+  use poll_id <- decode.field("poll_id", decode.string)
+  use voter_chat <- decode.field(
+    "voter_chat",
+    decode.optional(user.chat_decoder()),
+  )
+  use user <- decode.field("user", decode.optional(user.user_decoder()))
+  use option_ids <- decode.field("option_ids", decode.list(decode.int))
+  decode.success(PollAnswer(poll_id:, voter_chat:, user:, option_ids:))
 }
 
 pub type Game {
@@ -1305,8 +1598,37 @@ pub type Game {
   )
 }
 
+pub fn game_decoder() -> decode.Decoder(Game) {
+  use title <- decode.field("title", decode.string)
+  use description <- decode.field("description", decode.string)
+  use photo <- decode.field("photo", decode.list(file.photo_size_decoder()))
+  use text <- decode.field("text", decode.optional(decode.string))
+  use text_entities <- decode.field(
+    "text_entities",
+    decode.optional(decode.list(message_entity_decoder())),
+  )
+  use animation <- decode.field(
+    "animation",
+    decode.optional(file.animation_decoder()),
+  )
+  decode.success(Game(
+    title:,
+    description:,
+    photo:,
+    text:,
+    text_entities:,
+    animation:,
+  ))
+}
+
 pub type Dice {
   Dice(emoji: String, value: Int)
+}
+
+pub fn dice_decoder() -> decode.Decoder(Dice) {
+  use emoji <- decode.field("emoji", decode.string)
+  use value <- decode.field("value", decode.int)
+  decode.success(Dice(emoji:, value:))
 }
 
 pub type Contact {
@@ -1319,6 +1641,21 @@ pub type Contact {
   )
 }
 
+pub fn contact_decoder() -> decode.Decoder(Contact) {
+  use phone_number <- decode.field("phone_number", decode.string)
+  use first_name <- decode.field("first_name", decode.string)
+  use last_name <- decode.field("last_name", decode.optional(decode.string))
+  use user_id <- decode.field("user_id", decode.optional(decode.int))
+  use vcard <- decode.field("vcard", decode.optional(decode.string))
+  decode.success(Contact(
+    phone_number:,
+    first_name:,
+    last_name:,
+    user_id:,
+    vcard:,
+  ))
+}
+
 pub type LinkPreviewOptions {
   LinkPreviewOptions(
     is_disabled: Option(Bool),
@@ -1329,8 +1666,38 @@ pub type LinkPreviewOptions {
   )
 }
 
+pub fn link_preview_options_decoder() -> decode.Decoder(LinkPreviewOptions) {
+  use is_disabled <- decode.field("is_disabled", decode.optional(decode.bool))
+  use url <- decode.field("url", decode.optional(decode.string))
+  use prefer_smal_media <- decode.field(
+    "prefer_smal_media",
+    decode.optional(decode.bool),
+  )
+  use prefer_large_media <- decode.field(
+    "prefer_large_media",
+    decode.optional(decode.bool),
+  )
+  use show_above_text <- decode.field(
+    "show_above_text",
+    decode.optional(decode.bool),
+  )
+  decode.success(LinkPreviewOptions(
+    is_disabled:,
+    url:,
+    prefer_smal_media:,
+    prefer_large_media:,
+    show_above_text:,
+  ))
+}
+
 pub type Story {
   Story(chat: Chat, id: Int)
+}
+
+pub fn story_decoder() -> decode.Decoder(Story) {
+  use chat <- decode.field("chat", user.chat_decoder())
+  use id <- decode.field("id", decode.int)
+  decode.success(Story(chat:, id:))
 }
 
 pub type TextQuote {
@@ -1340,6 +1707,17 @@ pub type TextQuote {
     position: Int,
     is_manual: Option(Bool),
   )
+}
+
+pub fn text_quote_decoder() -> decode.Decoder(TextQuote) {
+  use text <- decode.field("text", decode.string)
+  use entities <- decode.field(
+    "entities",
+    decode.optional(decode.list(message_entity_decoder())),
+  )
+  use position <- decode.field("position", decode.int)
+  use is_manual <- decode.field("is_manual", decode.optional(decode.bool))
+  decode.success(TextQuote(text:, entities:, position:, is_manual:))
 }
 
 pub type MessageEntity {
@@ -1352,6 +1730,25 @@ pub type MessageEntity {
     language: String,
     custom_emoji_id: String,
   )
+}
+
+pub fn message_entity_decoder() -> decode.Decoder(MessageEntity) {
+  use message_entity_type <- decode.field("message_entity_type", decode.string)
+  use offset <- decode.field("offset", decode.int)
+  use length <- decode.field("length", decode.int)
+  use url <- decode.field("url", decode.string)
+  use user <- decode.field("user", user.user_decoder())
+  use language <- decode.field("language", decode.string)
+  use custom_emoji_id <- decode.field("custom_emoji_id", decode.string)
+  decode.success(MessageEntity(
+    message_entity_type:,
+    offset:,
+    length:,
+    url:,
+    user:,
+    language:,
+    custom_emoji_id:,
+  ))
 }
 
 pub type MessageOrigin {
@@ -1374,6 +1771,78 @@ pub type MessageOrigin {
     message_id: String,
     author_signature: Option(String),
   )
+  InvalidMessageOrigin
+}
+
+pub fn message_origin_decoder() -> decode.Decoder(MessageOrigin) {
+  use variant <- decode.field("type", decode.string)
+  case variant {
+    "message_origin_user" -> {
+      use message_origin_type <- decode.field(
+        "message_origin_type",
+        decode.string,
+      )
+      use date <- decode.field("date", decode.int)
+      use sender_user <- decode.field("sender_user", user.user_decoder())
+      decode.success(MessageOriginUser(
+        message_origin_type:,
+        date:,
+        sender_user:,
+      ))
+    }
+    "message_origin_hidden_user" -> {
+      use message_origin_type <- decode.field(
+        "message_origin_type",
+        decode.string,
+      )
+      use date <- decode.field("date", decode.int)
+      use sender_user_name <- decode.field("sender_user_name", decode.string)
+      decode.success(MessageOriginHiddenUser(
+        message_origin_type:,
+        date:,
+        sender_user_name:,
+      ))
+    }
+    "message_origin_chat" -> {
+      use message_origin_type <- decode.field(
+        "message_origin_type",
+        decode.string,
+      )
+      use date <- decode.field("date", decode.int)
+      use sender_chat <- decode.field("sender_chat", user.chat_decoder())
+      use author_signature <- decode.field(
+        "author_signature",
+        decode.optional(decode.string),
+      )
+      decode.success(MessageOriginChat(
+        message_origin_type:,
+        date:,
+        sender_chat:,
+        author_signature:,
+      ))
+    }
+    "message_origin_channel" -> {
+      use message_origin_type <- decode.field(
+        "message_origin_type",
+        decode.string,
+      )
+      use date <- decode.field("date", decode.int)
+      use chat <- decode.field("chat", user.chat_decoder())
+      use message_id <- decode.field("message_id", decode.string)
+      use author_signature <- decode.field(
+        "author_signature",
+        decode.optional(decode.string),
+      )
+      decode.success(MessageOriginChannel(
+        message_origin_type:,
+        date:,
+        chat:,
+        message_id:,
+        author_signature:,
+      ))
+    }
+    _ -> decode.failure(InvalidMessageOrigin, "MessageOrigin")
+  }
 }
 
 pub type UniqueGiftInfo {
@@ -1383,6 +1852,25 @@ pub type UniqueGiftInfo {
     owned_gift_id: Option(String),
     transfer_star_count: Option(Int),
   )
+}
+
+pub fn unique_gift_info_decoder() -> decode.Decoder(UniqueGiftInfo) {
+  use gift <- decode.field("gift", unique_gift_decoder())
+  use origin <- decode.field("origin", decode.string)
+  use owned_gift_id <- decode.field(
+    "owned_gift_id",
+    decode.optional(decode.string),
+  )
+  use transfer_star_count <- decode.field(
+    "transfer_star_count",
+    decode.optional(decode.int),
+  )
+  decode.success(UniqueGiftInfo(
+    gift:,
+    origin:,
+    owned_gift_id:,
+    transfer_star_count:,
+  ))
 }
 
 pub type UniqueGift {
@@ -1396,12 +1884,43 @@ pub type UniqueGift {
   )
 }
 
+pub fn unique_gift_decoder() -> decode.Decoder(UniqueGift) {
+  use base_name <- decode.field("base_name", decode.string)
+  use name <- decode.field("name", decode.string)
+  use number <- decode.field("number", decode.int)
+  use model <- decode.field("model", unique_gift_model_decoder())
+  use symbol <- decode.field("symbol", unique_gift_symbol_decoder())
+  use backdrop <- decode.field("backdrop", unique_gift_backdrop_decoder())
+  decode.success(UniqueGift(
+    base_name:,
+    name:,
+    number:,
+    model:,
+    symbol:,
+    backdrop:,
+  ))
+}
+
 pub type UniqueGiftModel {
   UniqueGiftModel(name: String, sticker: Sticker, rarity_per_mille: Int)
 }
 
+pub fn unique_gift_model_decoder() -> decode.Decoder(UniqueGiftModel) {
+  use name <- decode.field("name", decode.string)
+  use sticker <- decode.field("sticker", sticker.sticker_decoder())
+  use rarity_per_mille <- decode.field("rarity_per_mille", decode.int)
+  decode.success(UniqueGiftModel(name:, sticker:, rarity_per_mille:))
+}
+
 pub type UniqueGiftSymbol {
   UniqueGiftSymbol(name: String, sticker: Sticker, rarity_per_mille: Int)
+}
+
+pub fn unique_gift_symbol_decoder() -> decode.Decoder(UniqueGiftSymbol) {
+  use name <- decode.field("name", decode.string)
+  use sticker <- decode.field("sticker", sticker.sticker_decoder())
+  use rarity_per_mille <- decode.field("rarity_per_mille", decode.int)
+  decode.success(UniqueGiftSymbol(name:, sticker:, rarity_per_mille:))
 }
 
 pub type UniqueGiftBackdrop {
@@ -1412,6 +1931,13 @@ pub type UniqueGiftBackdrop {
   )
 }
 
+pub fn unique_gift_backdrop_decoder() -> decode.Decoder(UniqueGiftBackdrop) {
+  use name <- decode.field("name", decode.string)
+  use colors <- decode.field("colors", unique_gift_backdrop_colors_decoder())
+  use rarity_per_mille <- decode.field("rarity_per_mille", decode.int)
+  decode.success(UniqueGiftBackdrop(name:, colors:, rarity_per_mille:))
+}
+
 pub type UniqueGiftBackdropColors {
   UniqueGiftBackdropColors(
     center_color: Int,
@@ -1419,6 +1945,21 @@ pub type UniqueGiftBackdropColors {
     symbol_color: Int,
     text_color: Int,
   )
+}
+
+pub fn unique_gift_backdrop_colors_decoder() -> decode.Decoder(
+  UniqueGiftBackdropColors,
+) {
+  use center_color <- decode.field("center_color", decode.int)
+  use edge_color <- decode.field("edge_color", decode.int)
+  use symbol_color <- decode.field("symbol_color", decode.int)
+  use text_color <- decode.field("text_color", decode.int)
+  decode.success(UniqueGiftBackdropColors(
+    center_color:,
+    edge_color:,
+    symbol_color:,
+    text_color:,
+  ))
 }
 
 pub type GiftInfo {
@@ -1434,6 +1975,42 @@ pub type GiftInfo {
   )
 }
 
+pub fn gift_info_decoder() -> decode.Decoder(GiftInfo) {
+  use gift <- decode.field("gift", gift_decoder())
+  use owned_gift_id <- decode.field(
+    "owned_gift_id",
+    decode.optional(decode.string),
+  )
+  use convert_star_count <- decode.field(
+    "convert_star_count",
+    decode.optional(decode.int),
+  )
+  use prepaid_upgrade_star_count <- decode.field(
+    "prepaid_upgrade_star_count",
+    decode.optional(decode.int),
+  )
+  use can_be_upgraded <- decode.field(
+    "can_be_upgraded",
+    decode.optional(decode.bool),
+  )
+  use text <- decode.field("text", decode.optional(decode.string))
+  use entities <- decode.field(
+    "entities",
+    decode.optional(decode.list(message_entity_decoder())),
+  )
+  use is_private <- decode.field("is_private", decode.optional(decode.bool))
+  decode.success(GiftInfo(
+    gift:,
+    owned_gift_id:,
+    convert_star_count:,
+    prepaid_upgrade_star_count:,
+    can_be_upgraded:,
+    text:,
+    entities:,
+    is_private:,
+  ))
+}
+
 pub type Gift {
   Gift(
     id: String,
@@ -1445,6 +2022,29 @@ pub type Gift {
   )
 }
 
+pub fn gift_decoder() -> decode.Decoder(Gift) {
+  use id <- decode.field("id", decode.string)
+  use sticker <- decode.field("sticker", sticker.sticker_decoder())
+  use star_count <- decode.field("star_count", decode.int)
+  use upgrade_star_count <- decode.field(
+    "upgrade_star_count",
+    decode.optional(decode.int),
+  )
+  use total_count <- decode.field("total_count", decode.optional(decode.int))
+  use remaining_count <- decode.field(
+    "remaining_count",
+    decode.optional(decode.int),
+  )
+  decode.success(Gift(
+    id:,
+    sticker:,
+    star_count:,
+    upgrade_star_count:,
+    total_count:,
+    remaining_count:,
+  ))
+}
+
 pub type GiveawayCompleted {
   GiveawayCompleted(
     winner_count: Int,
@@ -1452,6 +2052,28 @@ pub type GiveawayCompleted {
     giveaway_message: Option(Message),
     is_star_giveaway: Option(Bool),
   )
+}
+
+pub fn giveaway_completed_decoder() -> decode.Decoder(GiveawayCompleted) {
+  use winner_count <- decode.field("winner_count", decode.int)
+  use unclaimed_prize_count <- decode.field(
+    "unclaimed_prize_count",
+    decode.optional(decode.int),
+  )
+  use giveaway_message <- decode.field(
+    "giveaway_message",
+    decode.optional(message_decoder()),
+  )
+  use is_star_giveaway <- decode.field(
+    "is_star_giveaway",
+    decode.optional(decode.bool),
+  )
+  decode.success(GiveawayCompleted(
+    winner_count:,
+    unclaimed_prize_count:,
+    giveaway_message:,
+    is_star_giveaway:,
+  ))
 }
 
 pub type GiveawayWinners {
@@ -1471,6 +2093,56 @@ pub type GiveawayWinners {
   )
 }
 
+pub fn giveaway_winners_decoder() -> decode.Decoder(GiveawayWinners) {
+  use chat <- decode.field("chat", user.chat_decoder())
+  use giveaway_message_id <- decode.field("giveaway_message_id", decode.int)
+  use winners_selection_date <- decode.field(
+    "winners_selection_date",
+    decode.int,
+  )
+  use winner_count <- decode.field("winner_count", decode.int)
+  use winners <- decode.field("winners", decode.list(user.user_decoder()))
+  use additional_chat_count <- decode.field(
+    "additional_chat_count",
+    decode.optional(decode.int),
+  )
+  use prize_star_count <- decode.field(
+    "prize_star_count",
+    decode.optional(decode.int),
+  )
+  use premium_subscription_month_count <- decode.field(
+    "premium_subscription_month_count",
+    decode.optional(decode.int),
+  )
+  use unclaimed_prize_count <- decode.field(
+    "unclaimed_prize_count",
+    decode.optional(decode.int),
+  )
+  use only_new_members <- decode.field(
+    "only_new_members",
+    decode.optional(decode.bool),
+  )
+  use was_refunded <- decode.field("was_refunded", decode.optional(decode.bool))
+  use prize_description <- decode.field(
+    "prize_description",
+    decode.optional(decode.string),
+  )
+  decode.success(GiveawayWinners(
+    chat:,
+    giveaway_message_id:,
+    winners_selection_date:,
+    winner_count:,
+    winners:,
+    additional_chat_count:,
+    prize_star_count:,
+    premium_subscription_month_count:,
+    unclaimed_prize_count:,
+    only_new_members:,
+    was_refunded:,
+    prize_description:,
+  ))
+}
+
 pub type Giveaway {
   Giveaway(
     chats: List(Chat),
@@ -1485,6 +2157,58 @@ pub type Giveaway {
   )
 }
 
+pub fn giveaway_decoder() -> decode.Decoder(Giveaway) {
+  use chats <- decode.field("chats", decode.list(user.chat_decoder()))
+  use winners_selection_date <- decode.field(
+    "winners_selection_date",
+    decode.int,
+  )
+  use winner_count <- decode.field("winner_count", decode.int)
+  use only_new_members <- decode.field(
+    "only_new_members",
+    decode.optional(decode.bool),
+  )
+  use has_public_winners <- decode.field(
+    "has_public_winners",
+    decode.optional(decode.bool),
+  )
+  use prize_description <- decode.field(
+    "prize_description",
+    decode.optional(decode.string),
+  )
+  use country_codes <- decode.field(
+    "country_codes",
+    decode.optional(decode.list(decode.string)),
+  )
+  use prize_star_count <- decode.field(
+    "prize_star_count",
+    decode.optional(decode.int),
+  )
+  use premium_subscription_month_count <- decode.field(
+    "premium_subscription_month_count",
+    decode.optional(decode.int),
+  )
+  decode.success(Giveaway(
+    chats:,
+    winners_selection_date:,
+    winner_count:,
+    only_new_members:,
+    has_public_winners:,
+    prize_description:,
+    country_codes:,
+    prize_star_count:,
+    premium_subscription_month_count:,
+  ))
+}
+
 pub type GiveawayCreated {
   GiveawayCreated(prize_star_count: Option(Int))
+}
+
+pub fn giveaway_created_decoder() -> decode.Decoder(GiveawayCreated) {
+  use prize_star_count <- decode.field(
+    "prize_star_count",
+    decode.optional(decode.int),
+  )
+  decode.success(GiveawayCreated(prize_star_count:))
 }

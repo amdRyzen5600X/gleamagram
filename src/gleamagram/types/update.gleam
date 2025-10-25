@@ -38,91 +38,88 @@ pub fn update_decoder() -> decode.Decoder(Update) {
   use update_id <- decode.field("update_id", decode.int)
   use message <- decode.field(
     "message",
-    decode.optional(todo as "Decoder for message.Message"),
+    decode.optional(message.message_decoder()),
   )
   use edited_message <- decode.field(
     "edited_message",
-    decode.optional(todo as "Decoder for message.Message"),
+    decode.optional(message.message_decoder()),
   )
   use channel_post <- decode.field(
     "channel_post",
-    decode.optional(todo as "Decoder for message.Message"),
+    decode.optional(message.message_decoder()),
   )
   use business_connection <- decode.field(
     "business_connection",
-    decode.optional(todo as "Decoder for business.BusinessConnection"),
+    decode.optional(business.business_connection_decoder()),
   )
   use business_message <- decode.field(
     "business_message",
-    decode.optional(todo as "Decoder for message.Message"),
+    decode.optional(message.message_decoder()),
   )
   use edited_business_message <- decode.field(
     "edited_business_message",
-    decode.optional(todo as "Decoder for message.Message"),
+    decode.optional(message.message_decoder()),
   )
   use deleted_business_message <- decode.field(
     "deleted_business_message",
-    decode.optional(todo as "Decoder for business.BusinessMessagesDeleted"),
+    decode.optional(business.business_messages_deleted_decoder()),
   )
   use message_reaction <- decode.field(
     "message_reaction",
-    decode.optional(todo as "Decoder for message.MessageReactionUpdated"),
+    decode.optional(message.message_reaction_updated_decoder()),
   )
   use message_reaction_count <- decode.field(
     "message_reaction_count",
-    decode.optional(todo as "Decoder for message.MessageReactionCountUpdated"),
+    decode.optional(message.message_reaction_count_updated_decoder()),
   )
   use inline_query <- decode.field(
     "inline_query",
-    decode.optional(todo as "Decoder for query.InlineQuery"),
+    decode.optional(query.inline_query_decoder()),
   )
   use chosen_inline_result <- decode.field(
     "chosen_inline_result",
-    decode.optional(todo as "Decoder for query.ChoosenInlineResult"),
+    decode.optional(query.choosen_inline_result_decoder()),
   )
   use callback_query <- decode.field(
     "callback_query",
-    decode.optional(todo as "Decoder for query.CallbackQuery"),
+    decode.optional(query.callback_query_decoder()),
   )
   use shipping_query <- decode.field(
     "shipping_query",
-    decode.optional(todo as "Decoder for query.ShippingQuery"),
+    decode.optional(query.shipping_query_decoder()),
   )
   use pre_checkout_query <- decode.field(
     "pre_checkout_query",
-    decode.optional(todo as "Decoder for query.PreCheckoutQuery"),
+    decode.optional(query.pre_checkout_query_decoder()),
   )
   use purchased_paid_media <- decode.field(
     "purchased_paid_media",
-    decode.optional(todo as "Decoder for file.PaidMediaPurchased"),
+    decode.optional(file.paid_media_purchased_decoder()),
   )
-  use poll <- decode.field(
-    "poll",
-    decode.optional(todo as "Decoder for message.Poll"),
-  )
+  use poll <- decode.field("poll", decode.optional(message.poll_decoder()))
   use poll_answer <- decode.field(
     "poll_answer",
-    decode.optional(todo as "Decoder for message.PollAnswer"),
+    decode.optional(message.poll_answer_decoder()),
   )
   use my_chat_member <- decode.field(
     "my_chat_member",
-    decode.optional(todo as "Decoder for user.ChatMemberUpdated"),
+    decode.optional(user.chat_member_updated_decoder()),
   )
   use chat_member <- decode.field(
     "chat_member",
-    decode.optional(todo as "Decoder for user.ChatMemberUpdated"),
+    decode.optional(user.chat_member_updated_decoder()),
   )
   use chat_join_requested <- decode.field(
     "chat_join_requested",
-    decode.optional(todo as "Decoder for user.ChatInviteLink"),
+    decode.optional(user.chat_invite_link_decoder()),
   )
   use chat_boost <- decode.field(
     "chat_boost",
-    decode.optional(todo as "Decoder for user.ChatBoostUpdated"),
+    decode.optional(user.chat_boost_updated_decoder()),
   )
   use removed_chat_boost <- decode.field(
     "removed_chat_boost",
-    decode.optional(todo as "Decoder for user.ChatBoostRemoved"),
+    decode.optional(user.chat_boost_removed_decoder()),
   )
   decode.success(Update(
     update_id:,

@@ -33,17 +33,17 @@ pub fn sticker_decoder() -> decode.Decoder(Sticker) {
   use is_video <- decode.field("is_video", decode.bool)
   use thumbnail <- decode.field(
     "thumbnail",
-    decode.optional(todo as "Decoder for PhotoSize"),
+    decode.optional(file.photo_size_decoder()),
   )
   use emoji <- decode.field("emoji", decode.optional(decode.string))
   use set_name <- decode.field("set_name", decode.optional(decode.string))
   use premium_animation <- decode.field(
     "premium_animation",
-    decode.optional(todo as "Decoder for File"),
+    decode.optional(file.file_decoder()),
   )
   use mask_position <- decode.field(
     "mask_position",
-    decode.optional(todo as "Decoder for MaskPosition"),
+    decode.optional(mask_position.mask_position_decoder()),
   )
   use custom_emoji_id <- decode.field(
     "custom_emoji_id",

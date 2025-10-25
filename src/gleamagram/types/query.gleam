@@ -22,7 +22,7 @@ pub fn inline_query_decoder() -> decode.Decoder(InlineQuery) {
   use chat_type <- decode.field("chat_type", decode.string)
   use location <- decode.field(
     "location",
-    decode.optional(todo as "Decoder for message.Location"),
+    decode.optional(message.location_decoder()),
   )
   decode.success(InlineQuery(id:, from:, query:, offset:, chat_type:, location:))
 }
@@ -42,7 +42,7 @@ pub fn choosen_inline_result_decoder() -> decode.Decoder(ChoosenInlineResult) {
   use from <- decode.field("from", user.user_decoder())
   use location <- decode.field(
     "location",
-    decode.optional(todo as "Decoder for message.Location"),
+    decode.optional(message.location_decoder()),
   )
   use inline_message_id <- decode.field(
     "inline_message_id",
@@ -75,7 +75,7 @@ pub fn callback_query_decoder() -> decode.Decoder(CallbackQuery) {
   use from <- decode.field("from", user.user_decoder())
   use message <- decode.field(
     "message",
-    decode.optional(todo as "Decoder for message.MaybeInaccessibleMessage"),
+    decode.optional(message.maybe_inaccessible_message_decoder()),
   )
   use inline_message_id <- decode.field(
     "inline_message_id",
@@ -113,7 +113,7 @@ pub fn shipping_query_decoder() -> decode.Decoder(ShippingQuery) {
   use invoice_payload <- decode.field("invoice_payload", decode.string)
   use shipping_address <- decode.field(
     "shipping_address",
-    todo as "Decoder for message.ShippingAddress",
+    message.shipping_address_decoder(),
   )
   decode.success(ShippingQuery(id:, from:, invoice_payload:, shipping_address:))
 }
@@ -142,7 +142,7 @@ pub fn pre_checkout_query_decoder() -> decode.Decoder(PreCheckoutQuery) {
   )
   use order_info <- decode.field(
     "order_info",
-    decode.optional(todo as "Decoder for message.OrderInfo"),
+    decode.optional(message.order_info_decoder()),
   )
   decode.success(PreCheckoutQuery(
     id:,
